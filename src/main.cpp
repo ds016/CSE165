@@ -1,6 +1,6 @@
 #include <iostream> 
 
-#include <glad/glad.h>
+#include <glad.h>
 #include <GLFW/glfw3.h>
 
 using namespace std; 
@@ -14,7 +14,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFW* window - glfwCreateWindow(800, 600, "this is not a window", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "this is not a window", NULL, NULL);
 
     if(window == NULL) {
         cout << "Failed to create GLFW window" << endl;
