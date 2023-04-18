@@ -30,6 +30,12 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "-std=c++17",
+                "-I./include", 
+                "-L./lib",
+                "src/\\*.cpp",
+                "src/glad.c",
+                "-lglfw3dll",
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
