@@ -21,24 +21,31 @@ float ypaddle = (heightwindow - heightpaddle / 10.0f);
 // function to create the paddle
 void createPaddle() {
 
-
-    // set the rectangle to the color white 
-    glColor3f(0.0f, 0.0f, 1.0f);
-
     // Drawing process 
     glBegin(GL_QUADS);
 
-    glVertex2f(xpaddle, ypaddle);
-    glVertex2f(xpaddle + widthpaddle, ypaddle);
-    glVertex2f(xpaddle + widthpaddle, ypaddle + heightpaddle);
-    glVertex2f(xpaddle, ypaddle + heightpaddle);
+    // set the rectangle to the color red 
+    glColor3f(1.0f, 0.0f, 0.0f);
+
+    // ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
+
+    // Example code to create a red paddle in the middle of the window screen 
+    glVertex2f(-0.8, -0.1);
+    glVertex2f(0.8, -0.1);
+
+    glVertex2f(0.8, 0.1);
+    glVertex2f(-0.8, 0.1);
 
     glEnd();
 
 }
 
+void errorCatch(int error, const char* description) {
+    cerr << "Error: " << description << endl;
+}
+
     
-int main(void) {   
+int main() {   
     // create the window instance here
     GLFWwindow* window;
 
@@ -46,10 +53,13 @@ int main(void) {
     if (!glfwInit())
         return -1;
 
+    glfwSetErrorCallback(errorCatch);
+    
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(widthwindow, heightwindow, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(widthwindow, heightwindow, "Atari Breakout Progression", NULL, NULL);
     if (!window)
     {
+        cerr << "Error: Could not create the window"  << endl;
         glfwTerminate();
         return -1;
     }
@@ -72,7 +82,6 @@ int main(void) {
 
         /* Poll for and process events */
         glfwPollEvents();
-
 
     }
 
