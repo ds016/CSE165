@@ -4,24 +4,23 @@
 using namespace std;
 
 
-// window dimension
-int widthwindow = 640;
-int heightwindow = 480;
+// game window dimension
+int widthwindow = 1000;
+int heightwindow = 1000;
 
-// paddle dimension
-int widthpaddle = 100;
-int heightpaddle = 20;
+// paddle's dimension
+float widthpaddle = 0.2f;
+float heightpaddle = 0.02f;
 
 // paddle initial position spawn
-float xpaddle = (widthwindow - widthpaddle / 2.0f);
-float ypaddle = (heightwindow - heightpaddle / 10.0f);
-
+float xpaddle = 0.0f;
+float ypaddle = -0.95f;
 
 
 // function to create the paddle
 void createPaddle() {
 
-    // Drawing process 
+    // Drawing process   
     glBegin(GL_QUADS);
 
     // set the rectangle to the color red 
@@ -30,19 +29,39 @@ void createPaddle() {
     // ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
 
     // Example code to create a red paddle in the middle of the window screen 
-    glVertex2f(-0.8, -0.1);
-    glVertex2f(0.8, -0.1);
+    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle);      // Bottom Left vertice
+    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle);      // Bottom Right vertice 
 
-    glVertex2f(0.8, 0.1);
-    glVertex2f(-0.8, 0.1);
+    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle + heightpaddle);   // Top Right Vertice
+    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle + heightpaddle);   // Top Left Vertice
 
-    glEnd();
-
+    // End drawing operation
+    glEnd();       
 }
 
-void errorCatch(int error, const char* description) {
-    cerr << "Error: " << description << endl;
-}
+
+void mousefunc(GLFWwindow* window, double xcord, double ycord) {
+
+    // Determining the mouse position & converting that into the relative position on the application window
+    float xposition = (float)xcord / (float)widthwindow * 2.0f - 1.0f;
+    
+    // The coordinate plane is using normal coordinate values... min = -1, max = 1 on the x and y axis
+    float leftx = 0.9;
+    float rightx = -0.9;
+
+    // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
+    if (xposition > leftx) {
+        xpaddle = leftx;
+    }
+    else if (xposition < rightx) {
+        xpaddle = rightx;
+    }
+    else {
+        xpaddle = xposition;
+    }
+
+}   
+
 
     
 int main() {   
@@ -53,7 +72,6 @@ int main() {
     if (!glfwInit())
         return -1;
 
-    glfwSetErrorCallback(errorCatch);
     
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(widthwindow, heightwindow, "Atari Breakout Progression", NULL, NULL);
@@ -67,6 +85,9 @@ int main() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    /* Position the cursor before creating the drawing */
+    glfwSetCursorPosCallback(window, mousefunc);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {   
         
@@ -74,7 +95,7 @@ int main() {
         // clear the screen before drawing
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // create the rectangle in the window context
+        // create the player model in the window context
         createPaddle();
 
         /* Swap front and back buffers */
@@ -83,6 +104,7 @@ int main() {
         /* Poll for and process events */
         glfwPollEvents();
 
+    
     }
 
     glfwTerminate();
