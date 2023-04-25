@@ -1,5 +1,7 @@
 #include <GLFW/glfw3.h>
-
+#include <Ball.h>
+#include <Blocks.h>
+#include <Player.h>
 #include <iostream>
 #include <cmath>
 
