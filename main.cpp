@@ -1,6 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <Ball.h>
-#include <Blocks.h>
+//#include <Blocks.h>
 #include <Player.h>
 #include <iostream>
 #include <cmath>
@@ -11,16 +11,9 @@ using namespace std;
 const float PI = 3.14159265358979323f;
 
 // game window dimension
-int widthwindow = 1000;
-int heightwindow = 1000;
-
-// paddle's dimension
-float widthpaddle = 0.2f;
-float heightpaddle = 0.02f;
-
-// paddle initial position spawn
-float xpaddle = 0.0f;
-float ypaddle = -0.95f;
+int widthwindow = 720;
+int heightwindow = 720;
+Player player;
 
 // radius of ball
 float radiusball = 0.02f;
@@ -28,28 +21,6 @@ float radiusball = 0.02f;
 // ball initial position spawn
 float xball = 0.0f; 
 float yball = 0.0f;
-
-// function to create the paddle
-void createPaddle() {
-
-    // Drawing process   
-    glBegin(GL_QUADS);
-
-    // set the rectangle to the color red 
-    glColor3f(1.0f, 0.0f, 0.0f);
-
-    // ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
-
-    // Example code to create a red paddle in the middle of the window screen 
-    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle);      // Bottom Left vertice
-    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle);      // Bottom Right vertice 
-
-    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle + heightpaddle);   // Top Right Vertice
-    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle + heightpaddle);   // Top Left Vertice
-
-    // End drawing operation
-    glEnd();       
-}
 
 // function to draw the ball model
 void createBall() {
@@ -88,13 +59,13 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord) {
 
     // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
     if (xposition > leftx) {
-        xpaddle = leftx;
+        player.setxpaddle(leftx);
     }
     else if (xposition < rightx) {
-        xpaddle = rightx;
+        player.setxpaddle(rightx);
     }
     else {
-        xpaddle = xposition;
+        player.setxpaddle(xposition);
     }
 
 }   
@@ -133,7 +104,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // create the player model in the window context
-        createPaddle();
+        player.createPaddle();
 
         // create the ball model in the window context 
         createBall();
@@ -150,3 +121,4 @@ int main() {
     glfwTerminate();
     return 0;
 }
+
