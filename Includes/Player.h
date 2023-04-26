@@ -27,6 +27,16 @@ public:
         return ypaddle;
     }
 
+    float getwidthpaddle()
+    {
+        return widthpaddle;
+    }
+
+    float getheightpaddle()
+    {
+        return heightpaddle;
+    }
+
     void setxpaddle(float x)
     {
         this->xpaddle = x;
