@@ -1,7 +1,10 @@
 #ifndef BLOCKS_H
 #define BLOCKS_H
 
-class genBlock{ //generic block object to be inherited by the different versions
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+class genBlock { //generic block object to be inherited by the different versions
 private:
 	int health;
 	bool alive;
@@ -9,13 +12,13 @@ private:
 	float widthblock = 0.18f;
 	float xblock, yblock;
 public:
-	virtual genBlock() {}
-	virtual ~genBlock() {}
+	genBlock() {}
+	~genBlock() {}
 
-	virtual float getxblock() {}
-	virtual float getyblock() {}
-	virtual void setxblock() {}
-	virtual void setyblock() {}
+	float getxblock() { return xblock; }
+	float getyblock() { return yblock; }
+	void setxblock(float xcoord) {}
+	void setyblock(float ycoord) {}
 
 	virtual int losehealth() {}
 
@@ -29,11 +32,11 @@ public:
 
 class yBlock:public genBlock{
 private:
-	health = 1;
+	int health = 1;
 public:
 	yBlock(float xcoord, float ycoord) {
-		this->xblock = xcoord;
-		this->yblock = ycoord;
+		setxblock(xcoord);
+		setyblock(ycoord);
 		alive = true;
 	}
 	float getxblock() { return this->xblock; }
@@ -44,7 +47,7 @@ public:
 
 class oBlock:public genBlock{
 private:
-	health = 2;
+	int health = 2;
 public:
 	oBlock(float xcoord, float ycoord) {
 		this->xblock = xcoord;
@@ -57,7 +60,7 @@ public:
 
 class rBlock:public genBlock{
 private:
-	health = 3;
+	int health = 3;
 public:
 	rBlock(float xcoord, float ycoord) {
 		this->xblock = xcoord;

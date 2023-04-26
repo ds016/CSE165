@@ -1,6 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <Ball.h>
-#include <Blocks.h>
+//#include <Blocks.h>
 #include <Player.h>
 #include <iostream>
 #include <cmath>
@@ -11,16 +11,9 @@ using namespace std;
 const float PI = 3.14159265358979323f;
 
 // game window dimension
-int widthwindow = 1000;
-int heightwindow = 1000;
-
-// paddle's dimension
-float widthpaddle = 0.2f;
-float heightpaddle = 0.02f;
-
-// paddle initial position spawn
-float xpaddle = 0.0f;
-float ypaddle = -0.95f;
+int widthwindow = 720;
+int heightwindow = 720;
+Player player;
 
 // radius of ball
 float radiusball = 0.02f;
@@ -29,27 +22,9 @@ float radiusball = 0.02f;
 float xball = 0.0f; 
 float yball = 0.0f;
 
-// function to create the paddle
-void createPaddle() {
-
-    // Drawing process   
-    glBegin(GL_QUADS);
-
-    // set the rectangle to the color red 
-    glColor3f(1.0f, 0.0f, 0.0f);
-
-    // ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
-
-    // Example code to create a red paddle in the middle of the window screen 
-    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle);      // Bottom Left vertice
-    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle);      // Bottom Right vertice 
-
-    glVertex2f(xpaddle + (widthpaddle / 2), ypaddle + heightpaddle);   // Top Right Vertice
-    glVertex2f(xpaddle - (widthpaddle / 2), ypaddle + heightpaddle);   // Top Left Vertice
-
-    // End drawing operation
-    glEnd();       
-}
+// to create movement, there needs to be velocity values [INITIAL VELOCITY]
+float xvelocityball = 0.001f;
+float yvelocityball = -0.01f;
 
 // function to draw the ball model
 void createBall() {
@@ -88,17 +63,62 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord) {
 
     // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
     if (xposition > leftx) {
-        xpaddle = leftx;
+        player.setxpaddle(leftx);
     }
     else if (xposition < rightx) {
-        xpaddle = rightx;
+        player.setxpaddle(rightx);
     }
     else {
-        xpaddle = xposition;
+        player.setxpaddle(xposition);
     }
 
 }   
 
+void ballmovement() {
+    // The coordinate plane is using normal coordinate values... min = -1, max = 1 on the x and y axis
+    float leftx = -1.0;
+    float rightx = 1.0;
+
+    // top and bottom bound 
+    float topy = 1.0;
+    float boty = -1.0;
+
+
+    // updating the ball's position with velocity values, AKA "shifting the position by velocity values
+    xball += xvelocityball;
+    yball += yvelocityball;
+
+    if (xball > rightx) {
+        xvelocityball = -1 * (xvelocityball);
+    }
+
+    if (xball < leftx) {
+        xvelocityball = -1 * (xvelocityball);
+    }
+
+    if (yball > topy) {
+        yvelocityball = -1 * (yvelocityball);
+    }
+
+    // need to return game over if this is going to be the end (FINISH THIS LATER)
+    if (yball < boty) {
+        yvelocityball = -1 * (yvelocityball);
+    }
+
+
+    // --> check if yball is less than / equal to top of paddle (height)
+    // --> check if xball is within bounds of widthpaddle (width)
+    //      --> change yballvelocity to negative
+
+    if (yball - radiusball < player.getypaddle() + player.getheightpaddle() 
+        && yball > player.getypaddle() 
+        && xball + radiusball > player.getxpaddle() - player.getwidthpaddle() 
+        && xball - radiusball < player.getxpaddle() + player.getwidthpaddle()) {
+        // yball = ypaddle + heightpaddle / 2 + radiusball;
+        yvelocityball = -1 * yvelocityball;
+    }
+
+}
 
     
 int main() {   
@@ -133,10 +153,13 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // create the player model in the window context
-        createPaddle();
+        player.createPaddle();
 
         // create the ball model in the window context 
         createBall();
+
+        // create the movement of the ball
+        ballmovement();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
