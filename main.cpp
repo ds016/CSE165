@@ -127,8 +127,19 @@ void ballmovement() {
         yvelocityball = -1 * (yvelocityball);
     }
 
+    // need to return game over if this is going to be the end (FINISH THIS LATER)
     if (yball < boty) {
         yvelocityball = -1 * (yvelocityball);
+    }
+
+
+    // --> check if yball is less than / equal to top of paddle (height)
+    // --> check if xball is within bounds of widthpaddle (width)
+    //      --> change yballvelocity to negative
+
+    if (yball - radiusball < ypaddle + heightpaddle  && yball > ypaddle && xball + radiusball > xpaddle - widthpaddle  && xball - radiusball < xpaddle + widthpaddle) {
+        // yball = ypaddle + heightpaddle / 2 + radiusball;
+        yvelocityball = -1 * yvelocityball;
     }
 
 }
@@ -161,9 +172,7 @@ int main() {
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {   
-        
-        ballmovement();
-
+       
         // clear the screen before drawing
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -173,13 +182,14 @@ int main() {
         // create the ball model in the window context 
         createBall();
 
+        // create the movement of the ball
+        ballmovement();
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
-
-        
 
     
     }
