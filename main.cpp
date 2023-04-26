@@ -26,6 +26,10 @@ float radiusball = 0.02f;
 float xball = 0.0f; 
 float yball = 0.0f;
 
+// to create movement, there needs to be velocity values [INITIAL VELOCITY]
+float xvelocityball = 0.0001f;
+float yvelocityball = -0.0001f;
+
 // function to create the paddle
 void createPaddle() {
 
@@ -83,6 +87,7 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord) {
     float leftx = 0.9;
     float rightx = -0.9;
 
+
     // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
     if (xposition > leftx) {
         xpaddle = leftx;
@@ -95,6 +100,38 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord) {
     }
 
 }   
+
+void ballmovement() {
+    // The coordinate plane is using normal coordinate values... min = -1, max = 1 on the x and y axis
+    float leftx = -1.0;
+    float rightx = 1.0;
+
+    // top and bottom bound 
+    float topy = 1.0;
+    float boty = -1.0;
+
+
+    // updating the ball's position with velocity values, AKA "shifting the position by velocity values
+    xball += xvelocityball;
+    yball += yvelocityball;
+
+    if (xball > rightx) {
+        xvelocityball = -1 * (xvelocityball);
+    }
+
+    if (xball < leftx) {
+        xvelocityball = -1 * (xvelocityball);
+    }
+
+    if (yball > topy) {
+        yvelocityball = -1 * (yvelocityball);
+    }
+
+    if (yball < boty) {
+        yvelocityball = -1 * (yvelocityball);
+    }
+
+}
 
 
     
@@ -125,6 +162,7 @@ int main() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {   
         
+        ballmovement();
 
         // clear the screen before drawing
         glClear(GL_COLOR_BUFFER_BIT);
@@ -140,6 +178,8 @@ int main() {
 
         /* Poll for and process events */
         glfwPollEvents();
+
+        
 
     
     }
