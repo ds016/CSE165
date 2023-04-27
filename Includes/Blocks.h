@@ -15,8 +15,9 @@ private:
 	int health=0;	//keeps track of times it's been hit, to be used for color
 	float xblock, yblock=0.0f;	//coords of block, bottom left corner
 public:
-	virtual float getheightblock() { return height; }
-	virtual float getwidthblock() { return width; }
+	virtual bool getlive() { return alive; };
+	int virtual gethealth() { return health; }
+
 	virtual float getxblock() { return xblock; }
 	virtual float getyblock() { return yblock; }
 	virtual void setxblock(float xcoord) { xblock = xcoord; }
@@ -37,8 +38,8 @@ public:
 		setyblock(ycoord);
 		alive = true;
 	}
-	float getheightblock() { return height; }
-	float getwidthblock() { return width; }
+	bool getlive() { return alive; };
+	int gethealth() { return health; }
 	float getxblock() { return xblock; }
 	float getyblock() { return yblock; }
 	void setxblock(float xcoord) { xblock = xcoord; }
@@ -65,8 +66,8 @@ public:
 		setyblock(ycoord);
 		alive = true;
 	}
-	float getheightblock() { return height; }
-	float getwidthblock() { return width; }
+	bool getlive() { return alive; };
+	int gethealth() { return health; }
 	float getxblock() { return xblock; }
 	float getyblock() { return yblock; }
 	void setxblock(float xcoord) { xblock = xcoord; }
@@ -91,8 +92,8 @@ public:
 		this->yblock = ycoord;
 		alive = true;
 	}
-	float getheightblock() { return height; }
-	float getwidthblock() { return width; }
+	bool getlive() { return alive; };
+	int gethealth() { return health; }
 	float getxblock() { return xblock; }
 	float getyblock() { return yblock; }
 	void setxblock(float xcoord) { xblock = xcoord; }
