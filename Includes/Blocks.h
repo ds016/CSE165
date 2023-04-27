@@ -17,6 +17,7 @@ private:
 public:
 	virtual bool getlive() { return alive; };
 	int virtual gethealth() { return health; }
+
 	virtual float getxblock() { return xblock; }
 	virtual float getyblock() { return yblock; }
 	virtual void setxblock(float xcoord) { xblock = xcoord; }
