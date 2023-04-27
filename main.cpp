@@ -2,9 +2,10 @@
 #include <cmath>
 #include <GLFW/glfw3.h>
 #include <Ball.h>
-//#include <Blocks.h>
+#include <Blocks.h>
 #include <Player.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -37,7 +38,6 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
     }
 
 }   
-
     
 int main() {   
     // create the window instance here
