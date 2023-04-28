@@ -86,8 +86,22 @@ public:
             && xball + radiusball > player.getxpaddle() - player.getwidthpaddle()
             && xball - radiusball < player.getxpaddle() + player.getwidthpaddle()) {
             // yball = ypaddle + heightpaddle / 2 + radiusball;
-            yvelocityball = -1 * yvelocityball;
+            yvelocityball *= -1;
+            float s = ((player.getxpaddle() + player.getwidthpaddle()) - xball);
+            if (s > player.getwidthpaddle() && xvelocityball < 0)
+                xvelocityball *= 1 + (0.001 * (100 * s-player.getwidthpaddle()));
+            else if ((s > player.getwidthpaddle() && xvelocityball > 0))
+                xvelocityball *= -1 - (0.001 * (100 * s - player.getwidthpaddle()));
+            else if ((s < player.getwidthpaddle() && xvelocityball < 0))
+                xvelocityball *= -1 - (0.001 * (100 * s - player.getwidthpaddle()));
+            else
+                xvelocityball *= 1 + (0.001 * (100 * s - player.getwidthpaddle()));
+            //std::cout << xvelocityball << std::endl;
+            
+            
         }
+
+        
 
     }
 
