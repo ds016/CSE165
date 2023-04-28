@@ -97,8 +97,7 @@ public:
             else
                 xvelocityball *= 1 + (0.001 * (100 * s - player.getwidthpaddle()));
             //std::cout << xvelocityball << std::endl;
-            
-            
+
         }
 
         
