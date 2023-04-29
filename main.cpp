@@ -14,6 +14,7 @@ int widthwindow = 720;
 int heightwindow = 720;
 Player player;
 Ball ball;
+std::vector<genBlock*> Grid = generateBlocks();
 
 // function to handle mouse input for the movement of player
 void mousefunc(GLFWwindow* window, double xcord, double ycord) 
@@ -69,9 +70,12 @@ int main() {
 
         // clear the screen before drawing
         glClear(GL_COLOR_BUFFER_BIT);
-
+        
         // create the player model in the window context
         player.createPaddle();
+        
+        // create the blocks
+        createBlocks(Grid);
 
         // create the ball model in the window context 
         ball.createBall();
