@@ -15,39 +15,71 @@ int heightwindow = 720;
 Player player;
 Ball ball;
 
+
 void drawBlocks() {
     // define the brick dimensions
     float widthblock = 0.055f;
     float heightblock = 0.01f;
     
+    // offset during the creation so blocks are not
     float gap = 0.07f;
-    
+     
     // formation of the bricks
     int row = 7;
     int col = 16;
     
+    // Creating a standalone "health block" check
+    bool blocks[row][col];
+    
+    
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            // we are assuming a uniform coordinate system of [-1.0f, 1.0f]
-            float xblock = -0.99 + widthblock + (j * (widthblock + gap));
-            float yblock = 0.8 - heightblock - (i * (heightblock + gap));
+            // **** Change if needed ****
+            blocks[row][col] = true;
             
-            // set the color to red as a test
-            glColor3f(1.0, 0.0, 0.0);
+            if (blocks[row][col]) {
+                // we are assuming a uniform coordinate system of [-1.0f, 1.0f]
+                float xblock = -0.99 + widthblock + (j * (widthblock + gap));
+                float yblock = 0.8 - heightblock - (i * (heightblock + gap));
+                
+                // set the color to red as a test
+                glColor3f(1.0, 0.0, 0.0);
+                
+                // for loop that will DRAW the block
+                glBegin(GL_QUADS);
+                
+                // bot left -> bot right -> top right -> top left
+                glVertex2f(xblock - widthblock, yblock - heightblock);
+                glVertex2f(xblock + widthblock, yblock - heightblock);
+                glVertex2f(xblock + widthblock, yblock + heightblock);
+                glVertex2f(xblock - widthblock, yblock + heightblock);
+                
+                // end drawing process
+                glEnd();
+                
+                if ( (xball + radiusball > xblock - widthblock) &&
+                    (xball - radiusball < xblock - widthblock) &&
+                    (yball + radiusball > yblock - widthblock) &&
+                    (yball - radiusball < yblock + widthblock))  {
+                    
+                    if((xball > xblock - widthblock) &&
+                       (xball < xblock + widthblock)) {
+                        
+                        yvelocityball = -1 * yvelocityball;
+                    }
+                    
+                    if((yball > yblock + heightblock) &&
+                       (yball < yblock + heightblock)) {
+                        
+                        xvelocityball = -1 * xvelocityball;
+                    }
+                    
+                    blocks[row][col] = false;
+                }
+            }
             
-            // for loop that will DRAW the block
-            glBegin(GL_QUADS);
-            
-            // bot left -> bot right -> top right -> top left
-            glVertex2f(xblock - widthblock, yblock - heightblock);
-            glVertex2f(xblock + widthblock, yblock - heightblock);
-            glVertex2f(xblock + widthblock, yblock + heightblock);
-            glVertex2f(xblock - widthblock, yblock + heightblock);
-            
-            // end drawing process
-            glEnd();
-        }
-    }
+        } // end J loop
+    }   // end I loop
 }
 
 
