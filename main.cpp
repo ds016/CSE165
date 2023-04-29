@@ -1,9 +1,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <GLFW/glfw3.h>
-#include <Ball.h>
-#include <Blocks.h>
-#include <Player.h>
+#include "Ball.h"
+#include "Blocks.h"
+#include "Player.h"
 #include <iostream>
 #include <vector>
 
@@ -15,8 +15,45 @@ int heightwindow = 720;
 Player player;
 Ball ball;
 
+void drawBlocks() {
+    // define the brick dimensions
+    float widthblock = 0.055f;
+    float heightblock = 0.01f;
+    
+    float gap = 0.07f;
+    
+    // formation of the bricks
+    int row = 7;
+    int col = 16;
+    
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            // we are assuming a uniform coordinate system of [-1.0f, 1.0f]
+            float xblock = -0.99 + widthblock + (j * (widthblock + gap));
+            float yblock = 0.8 - heightblock - (i * (heightblock + gap));
+            
+            // set the color to red as a test
+            glColor3f(1.0, 0.0, 0.0);
+            
+            // for loop that will DRAW the block
+            glBegin(GL_QUADS);
+            
+            // bot left -> bot right -> top right -> top left
+            glVertex2f(xblock - widthblock, yblock - heightblock);
+            glVertex2f(xblock + widthblock, yblock - heightblock);
+            glVertex2f(xblock + widthblock, yblock + heightblock);
+            glVertex2f(xblock - widthblock, yblock + heightblock);
+            
+            // end drawing process
+            glEnd();
+        }
+    }
+}
+
+
+
 // function to handle mouse input for the movement of player
-void mousefunc(GLFWwindow* window, double xcord, double ycord) 
+void mousefunc(GLFWwindow* window, double xcord, double ycord)
 {
 
     // Determining the mouse position & converting that into the relative position on the application window
@@ -26,7 +63,7 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
     float leftx = 0.9f;
     float rightx = -0.9f;
 
-    // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
+    // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor
     if (xposition > leftx) {
         player.setxpaddle(leftx);
     }
@@ -37,9 +74,9 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
         player.setxpaddle(xposition);
     }
 
-}   
+}
     
-int main() {   
+int main() {
     // create the window instance here
     GLFWwindow* window;
 
@@ -64,7 +101,7 @@ int main() {
     glfwSetCursorPosCallback(window, mousefunc);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {   
+    while (!glfwWindowShouldClose(window)) {
         
 
         // clear the screen before drawing
@@ -73,12 +110,15 @@ int main() {
         // create the player model in the window context
         player.createPaddle();
 
-        // create the ball model in the window context 
+        // create the ball model in the window context
         ball.createBall();
 
         // create the movement of the ball
         ball.ballmovement(player);
 
+        // Spawn the blocks
+        drawBlocks();
+        
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -90,4 +130,3 @@ int main() {
     glfwTerminate();
     return 0;
 }
-
