@@ -6,14 +6,15 @@
 #include <vector>
 
 const float height = 0.1f;
-const float width = (float)(1/7);
+const float width = (float)(1/14);
 
 
 class genBlock {	//generic block object to be inherited by the different versions
 private:
-	bool alive=false;	//bool status for life of block, used to display
-	int health=0;	//keeps track of times it's been hit, to be used for color
-	float xblock, yblock=0.0f;	//coords of block, bottom left corner
+	bool alive = false;	//bool status for life of block, used to display
+	int health = 0;	//keeps track of times it's been hit, to be used for color
+	float xblock = 0.0f;
+	float yblock = 0.0f;	//coords of block, bottom left corner
 public:
 	virtual bool getlive() { return alive; };
 	int virtual gethealth() { return health; }
@@ -114,18 +115,89 @@ std::vector<genBlock*> generateBlocks() {//14wide,9tall; flush to top and side; 
 	for (int y = 0; y < 9; y++) {
 		for (int x = 0; x < 14; x++) {
 			if (y < 3) {
-				grid.push_back(new rBlock(-1 + (width * x), 1 - (height * (y + 1))));
+				grid.push_back(new rBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
 			}
 			else if (3 <= y && y < 6) {
-				grid.push_back(new oBlock(-1 + (width * x), 1 - (height * (y + 1))));
+				grid.push_back(new oBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
 			}
 			else{
-				grid.push_back(new yBlock(-1 + (width * x), 1 - (height * (y + 1))));
+				grid.push_back(new yBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
 			}
 		}
 	}
 
 	return grid;
+}
+
+void createBlocks(std::vector<genBlock*> grid) {
+	
+	for (int i = 0; i < grid.size(); i++) {
+		if (grid[i]->getlive()) {
+			if (grid[i]->gethealth() == 3) {
+				
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// set the rectangle to the color red 
+				glColor3f(1.0f, 0.0f, 0.0f);
+
+				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
+
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+std::cout << "red" << std::endl;
+			}
+			else if (grid[i]->gethealth() == 2) {
+				
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// set the rectangle to the color orrange 
+				glColor3f(1.0f, 0.5f, 0.0f);
+
+				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
+
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+std::cout << "orange" << std::endl;
+			}
+			else {
+				
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// set the rectangle to the color yellow 
+				glColor3f(1.0f, 1.0f, 0.0f);
+
+				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
+
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+std::cout << "yellow" << std::endl;
+			}
+		}
+	}
 }
 
 
