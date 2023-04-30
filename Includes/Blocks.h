@@ -10,7 +10,6 @@ const float height = 0.01f;
 const float width = 0.055f;
 const float gap = 0.07f;
 
-
 class genBlock {	//generic block object to be inherited by the different versions
 private:
 	bool alive = false;	//bool status for life of block, used to display
@@ -185,7 +184,6 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 				// Example code to create a red paddle in the middle of the window screen 
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
-
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
 
@@ -202,13 +200,13 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 				// Example code to create a red paddle in the middle of the window screen 
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
-
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
 
 				// End drawing operation
 				glEnd();
 				collisioncheck(grid[i], ball);
+
 			}
 		}
 	}
