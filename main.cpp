@@ -1,9 +1,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <GLFW/glfw3.h>
-#include <Ball.h>
-#include <Blocks.h>
-#include <Player.h>
+#include "Ball.h"
+#include "Blocks.h"
+#include "Player.h"
 #include <iostream>
 #include <vector>
 
@@ -16,18 +16,22 @@ Player player;
 Ball ball;
 std::vector<genBlock*> Grid = generateBlocks();
 
+
+
+
+
 // function to handle mouse input for the movement of player
-void mousefunc(GLFWwindow* window, double xcord, double ycord) 
+void mousefunc(GLFWwindow* window, double xcord, double ycord)
 {
 
     // Determining the mouse position & converting that into the relative position on the application window
     float xposition = (float)xcord / (float)widthwindow * 2.0f - 1.0f;
-    
+
     // The coordinate plane is using normal coordinate values... min = -1, max = 1 on the x and y axis
     float leftx = 0.9f;
     float rightx = -0.9f;
 
-    // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor 
+    // Checking if player model ever hits bounds, if bound is hit, condition. If not, player matches cursor
     if (xposition > leftx) {
         player.setxpaddle(leftx);
     }
@@ -38,9 +42,9 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
         player.setxpaddle(xposition);
     }
 
-}   
-    
-int main() {   
+}
+
+int main() {
     // create the window instance here
     GLFWwindow* window;
 
@@ -48,12 +52,12 @@ int main() {
     if (!glfwInit())
         return -1;
 
-    
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(widthwindow, heightwindow, "Atari Breakout Progression", NULL, NULL);
     if (!window)
     {
-        cerr << "Error: Could not create the window"  << endl;
+        cerr << "Error: Could not create the window" << endl;
         glfwTerminate();
         return -1;
     }
@@ -65,21 +69,21 @@ int main() {
     glfwSetCursorPosCallback(window, mousefunc);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {   
-        
+    while (!glfwWindowShouldClose(window)) {
+
 
         // clear the screen before drawing
         glClear(GL_COLOR_BUFFER_BIT);
-        
+
         // create the player model in the window context
         player.createPaddle();
-        
-        // create the blocks
-        createBlocks(Grid);
 
-        // create the ball model in the window context 
+        // create the ball model in the window context
         ball.createBall();
-
+        
+        // Spawn the blocks
+        createBlocks(Grid,ball);
+        
         // create the movement of the ball
         ball.ballmovement(player);
 
@@ -88,10 +92,9 @@ int main() {
 
         /* Poll for and process events */
         glfwPollEvents();
-    
+
     }
 
     glfwTerminate();
     return 0;
 }
-

@@ -2,11 +2,13 @@
 #define BLOCKS_H
 
 #include <GLFW/glfw3.h>
+#include <Ball.h>
 #include <iostream>
 #include <vector>
 
-const float height = 0.1f;
-const float width = (float)(1/14);
+const float height = 0.01f;
+const float width = 0.055f;
+const float gap = 0.07f;
 
 
 class genBlock {	//generic block object to be inherited by the different versions
@@ -22,6 +24,8 @@ public:
 	virtual float getyblock() { return yblock; }
 	virtual void setxblock(float xcoord) { xblock = xcoord; }
 	virtual void setyblock(float ycoord) { yblock = ycoord; }
+	float getwidth() { return width; }
+	float getheight() { return height; }
 
 	virtual void blockhit() = 0;	//pure virtual function to make this abstract, 
 									//the point of it is to deal with modifying block data once hit
@@ -52,6 +56,7 @@ public:
 				alive = false;
 			}
 		}
+		std::cout << "yellow hit" << std::endl;
 	}
 };
 
@@ -78,6 +83,7 @@ public:
 			health--;
 			dynamic_cast<yBlock*>(this);
 		}
+		std::cout << "orange hit" << std::endl;
 	}
 };
 
@@ -104,23 +110,24 @@ public:
 			health--;
 			dynamic_cast<oBlock*>(this);
 		}
+		std::cout << "red hit" << std::endl;
 	}
 };
 
 
-std::vector<genBlock*> generateBlocks() {//14wide,9tall; flush to top and side; height=.1, width=1/7
+std::vector<genBlock*> generateBlocks() {
 	std::vector<genBlock*> grid;	//stored top->bottom, left->right
 	
 	for (int y = 0; y < 9; y++) {
-		for (int x = 0; x < 14; x++) {
+		for (int x = 0; x < 16; x++) {
 			if (y < 3) {
-				grid.push_back(new rBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
+				grid.push_back(new rBlock(-0.99 + width + (x * (width + gap)), 0.8 - height - (y * (height + gap))));
 			}
 			else if (3 <= y && y < 6) {
-				grid.push_back(new oBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
+				grid.push_back(new oBlock(-0.99 + width + (x * (width + gap)), 0.8 - height - (y * (height + gap))));
 			}
 			else{
-				grid.push_back(new yBlock(-1 + (width * (x + 1)), 1 - (height * (y + 1))));
+				grid.push_back(new yBlock(-0.99 + width + (x * (width + gap)), 0.8 - height - (y * (height + gap))));
 			}
 		}
 	}
@@ -128,73 +135,83 @@ std::vector<genBlock*> generateBlocks() {//14wide,9tall; flush to top and side; 
 	return grid;
 }
 
-void createBlocks(std::vector<genBlock*> grid) {
-	
-	for (int i = 0; i < grid.size(); i++) {
-		if (grid[i]->getlive()) {
-			if (grid[i]->gethealth() == 3) {
-				
-				// Drawing process   
-				glBegin(GL_QUADS);
+void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision checking
+	if ((ball.getxball() + ball.getradiusball() > block->getxblock() - width) &&
+		(ball.getxball() - ball.getradiusball() < block->getxblock() - width) &&
+		(ball.getyball() + ball.getradiusball() > block->getyblock() - width) &&
+		(ball.getyball() - ball.getradiusball() < block->getyblock() + width)) {
 
-				// set the rectangle to the color red 
-				glColor3f(1.0f, 0.0f, 0.0f);
+		if ((ball.getxball() > block->getxblock() - width) &&
+			(ball.getxball() < block->getxblock() + width)) {
 
-				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
+			ball.setyvelocityball(-1 * ball.getyvelocityball());
+			block->blockhit();
+		}
+		else if ((ball.getyball() > block->getyblock() + height) &&
+			(ball.getyball() < block->getyblock() + height)) {
 
-				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
-
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
-
-				// End drawing operation
-				glEnd();
-			}
-			else if (grid[i]->gethealth() == 2) {
-				
-				// Drawing process   
-				glBegin(GL_QUADS);
-
-				// set the rectangle to the color orrange 
-				glColor3f(1.0f, 0.5f, 0.0f);
-
-				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
-
-				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
-
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
-
-				// End drawing operation
-				glEnd();
-			}
-			else {
-				
-				// Drawing process   
-				glBegin(GL_QUADS);
-
-				// set the rectangle to the color yellow 
-				glColor3f(1.0f, 1.0f, 0.0f);
-
-				// ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
-
-				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock());      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock());      // Bottom Right vertice 
-
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
-
-				// End drawing operation
-				glEnd();
-			}
+			ball.setxvelocityball(-1 * ball.getxvelocityball());
+			block->blockhit();
 		}
 	}
 }
 
+void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
+	
+	for (int i = 0; i < grid.size(); i++) {
+		if (grid[i]->getlive()) {
+			if (grid[i]->gethealth() == 3) {
+				// set the rectangle to the color red 
+				glColor3f(1.0f, 0.0f, 0.0f);
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+				collisioncheck(grid[i], ball);
+			}
+			else if (grid[i]->gethealth() == 2) {
+				// set the rectangle to the color orrange 
+				glColor3f(1.0f, 0.5f, 0.0f);
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+				collisioncheck(grid[i], ball);
+			}
+			else {
+				// set the rectangle to the color yellow 
+				glColor3f(1.0f, 1.0f, 0.0f);
+				// Drawing process   
+				glBegin(GL_QUADS);
+
+				// Example code to create a red paddle in the middle of the window screen 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
+
+				// End drawing operation
+				glEnd();
+				collisioncheck(grid[i], ball);
+			}
+		}
+	}
+}
 
 #endif

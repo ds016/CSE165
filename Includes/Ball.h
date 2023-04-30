@@ -17,9 +17,18 @@ private:
 
     // to create movement, there needs to be velocity values [INITIAL VELOCITY]
     float xvelocityball = 0.001f;
-    float yvelocityball = -0.01f;
+    float yvelocityball = -0.005f;
 
 public:
+    float getradiusball() { return radiusball; }
+    float getxball() { return xball; }
+    float getyball() { return xball; }
+    float getxvelocityball() { return xvelocityball; }
+    float getyvelocityball() { return yvelocityball; }
+    void setxvelocityball(float newv) { xvelocityball = newv; std::cout << "x: "<<newv << std::endl; }
+    void setyvelocityball(float newv) { yvelocityball = newv; std::cout << "y: " << newv << std::endl;
+    }
+
     // function to draw the ball model
     void createBall() {
         // Drawing process 
@@ -80,7 +89,7 @@ public:
         // --> check if yball is less than / equal to top of paddle (height)
         // --> check if xball is within bounds of widthpaddle (width)
         //      --> change yballvelocity to negative
-
+        
         if (yball - radiusball < player.getypaddle() + player.getheightpaddle()
             && yball > player.getypaddle()
             && xball + radiusball > player.getxpaddle() - player.getwidthpaddle()
@@ -88,7 +97,6 @@ public:
             // yball = ypaddle + heightpaddle / 2 + radiusball;
             yvelocityball = -1 * yvelocityball;
         }
-
     }
 
 };
