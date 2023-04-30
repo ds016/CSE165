@@ -40,6 +40,9 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
 
 }
 
+
+
+
 int main() {
     // create the window instance here
     GLFWwindow* window;
@@ -77,11 +80,11 @@ int main() {
         // create the ball model in the window context
         ball.createBall();
         
-        // Spawn the blocks
-        createBlocks(Grid,ball);
-        
         // create the movement of the ball
         ball.ballmovement(player);
+
+        // Spawn the blocks
+        createBlocks(Grid,ball);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

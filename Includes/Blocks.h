@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-const float height = 0.01f;
+const float height = 0.0025f;
 const float width = 0.055f;
 const float gap = 0.07f;
 
@@ -33,7 +33,7 @@ public:
 class yBlock:public genBlock{
 private:
 	bool alive;
-	int health = 1;
+	int health = 3;
 	float xblock, yblock;
 public:
 	yBlock(float xcoord, float ycoord) {
@@ -50,10 +50,10 @@ public:
 
 	void blockhit() {
 		if (alive == true) {
-			if (health > 0) {
+			if (health > 1) {
 				health--;
-				alive = false;
 			}
+			else alive = false;
 		}
 		std::cout << "yellow hit" << std::endl;
 	}
@@ -62,12 +62,12 @@ public:
 class oBlock:public genBlock{
 private:
 	bool alive;
-	int health = 2;
+	int health = 6;
 	float xblock, yblock;
 public:
 	oBlock(float xcoord, float ycoord) {
-		setxblock(xcoord);
-		setyblock(ycoord);
+		this->xblock=(xcoord);
+		this->yblock=(ycoord);
 		alive = true;
 	}
 	bool getlive() { return alive; };
@@ -78,9 +78,16 @@ public:
 	void setyblock(float ycoord) { yblock = ycoord; }
 
 	void blockhit() {
-		if (health > 1) {
+		/*if (health > 1) {
 			health--;
-			dynamic_cast<yBlock*>(this);
+			reinterpret_cast<yBlock*>(this);
+		}
+		std::cout << "orange hit" << std::endl;*/
+		if (alive == true) {
+			if (health > 1) {
+				health--;
+			}
+			else alive = false;
 		}
 		std::cout << "orange hit" << std::endl;
 	}
@@ -89,7 +96,7 @@ public:
 class rBlock:public genBlock{
 private:
 	bool alive;
-	int health = 3;
+	int health = 9;
 	float xblock, yblock;
 public:
 	rBlock(float xcoord, float ycoord) {
@@ -105,9 +112,18 @@ public:
 	void setyblock(float ycoord) { yblock = ycoord; }
 
 	void blockhit() {
-		if (health > 2) {
+		/*if (health > 2) {
 			health--;
-			dynamic_cast<oBlock*>(this);
+			reinterpret_cast<oBlock*>(this);
+		}
+		alive = false;
+		std::cout << "red hit" << std::endl;
+		return oBlock(this);*/
+		if (alive == true) {
+			if (health > 1) {
+				health--;
+			}
+			else alive = false;
 		}
 		std::cout << "red hit" << std::endl;
 	}
@@ -135,6 +151,17 @@ std::vector<genBlock*> generateBlocks() {
 }
 
 void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision checking
+	float leftBallbound = ball.getxball() - ball.getradiusball();
+	float rightBallbound = ball.getxball() + ball.getradiusball();;
+	float bottomBallbound = ball.getyball() - ball.getradiusball();;
+	float topBallbound = ball.getyball() + ball.getradiusball();;
+
+	float leftBlockbound = block->getxblock();
+	float rightBlockbound = block->getxblock() + width;
+	float bottomBlockbound = block->getyblock();
+	float topBlockbound = block->getyblock() + height;
+
+	/*
 	if ((ball.getxball() + ball.getradiusball() > block->getxblock() - width) &&
 		(ball.getxball() - ball.getradiusball() < block->getxblock() - width) &&
 		(ball.getyball() + ball.getradiusball() > block->getyblock() - width) &&
@@ -152,22 +179,33 @@ void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision c
 			ball.setxvelocityball(-1 * ball.getxvelocityball());
 			block->blockhit();
 		}
+	}*/
+
+	if (leftBallbound < rightBlockbound &&
+		rightBallbound > leftBlockbound &&
+		topBallbound > bottomBlockbound &&
+		bottomBallbound < topBlockbound) {
+
+		ball.setxball(ball.getxvelocityball());
+		ball.setyball(ball.getyvelocityball());
+		ball.setyvelocityball(-1 * ball.getyvelocityball());
+		block->blockhit();
 	}
 }
 
 void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
-	
+
 	for (int i = 0; i < grid.size(); i++) {
 		if (grid[i]->getlive()) {
-			if (grid[i]->gethealth() == 3) {
+			if (grid[i]->gethealth() > 6) {
 				// set the rectangle to the color red 
 				glColor3f(1.0f, 0.0f, 0.0f);
 				// Drawing process   
 				glBegin(GL_QUADS);
 
 				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() - height);      // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() - height);      // Bottom Right vertice 
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
 
@@ -175,15 +213,15 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 				glEnd();
 				collisioncheck(grid[i], ball);
 			}
-			else if (grid[i]->gethealth() == 2) {
+			else if (grid[i]->gethealth() > 3) {
 				// set the rectangle to the color orrange 
 				glColor3f(1.0f, 0.5f, 0.0f);
 				// Drawing process   
 				glBegin(GL_QUADS);
 
 				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() - height);   // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() - height);   // Bottom Right vertice 
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
 
@@ -198,8 +236,8 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 				glBegin(GL_QUADS);
 
 				// Example code to create a red paddle in the middle of the window screen 
-				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock()-height);      // Bottom Left vertice
-				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock()-height);      // Bottom Right vertice 
+				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() - height);   // Bottom Left vertice
+				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() - height);   // Bottom Right vertice 
 				glVertex2f(grid[i]->getxblock() + width, grid[i]->getyblock() + height);   // Top Right Vertice
 				glVertex2f(grid[i]->getxblock() - width, grid[i]->getyblock() + height);   // Top Left Vertice
 
