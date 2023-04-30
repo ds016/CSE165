@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <Player.h>
 #include <iostream>
+#include <math.h>
 
 
 class Ball {
@@ -13,7 +14,7 @@ private:
 
     // ball initial position spawn
     float xball = 0.0f;
-    float yball = 0.0f;
+    float yball = -0.5f;
 
     // to create movement, there needs to be velocity values [INITIAL VELOCITY]
     float xvelocityball = 0.001f;
@@ -22,12 +23,13 @@ private:
 public:
     float getradiusball() { return radiusball; }
     float getxball() { return xball; }
-    float getyball() { return xball; }
+    float getyball() { return yball; }
+    void setxball(float extra) { xball += extra; }
+    void setyball(float extra) { yball += extra; }
     float getxvelocityball() { return xvelocityball; }
     float getyvelocityball() { return yvelocityball; }
-    void setxvelocityball(float newv) { xvelocityball = newv; std::cout << "x: "<<newv << std::endl; }
-    void setyvelocityball(float newv) { yvelocityball = newv; std::cout << "y: " << newv << std::endl;
-    }
+    void setxvelocityball(float newv) { xvelocityball = newv; std::cout << "x: " << newv << std::endl; }
+    void setyvelocityball(float newv) { yvelocityball = newv; std::cout << "y: " << newv << std::endl;}
 
     // function to draw the ball model
     void createBall() {
