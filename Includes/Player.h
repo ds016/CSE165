@@ -9,6 +9,7 @@ class Player
 private:
     // paddle's dimension
     float widthpaddle = 0.1f;
+    float widthpaddle = 0.1f;
     float heightpaddle = 0.02f;
 
     // paddle initial position spawn
