@@ -6,7 +6,8 @@
 #include <iostream>
 #include <vector>
 
-const float height = 0.0025f;
+const int basehealth = 1;
+const float height = 0.01f;
 const float width = 0.055f;
 const float gap = 0.07f;
 
@@ -33,7 +34,7 @@ public:
 class yBlock:public genBlock{
 private:
 	bool alive;
-	int health = 3;
+	int health = basehealth;
 	float xblock, yblock;
 public:
 	yBlock(float xcoord, float ycoord) {
@@ -62,7 +63,7 @@ public:
 class oBlock:public genBlock{
 private:
 	bool alive;
-	int health = 6;
+	int health = 2 * basehealth;
 	float xblock, yblock;
 public:
 	oBlock(float xcoord, float ycoord) {
@@ -96,7 +97,7 @@ public:
 class rBlock:public genBlock{
 private:
 	bool alive;
-	int health = 9;
+	int health = 3 * basehealth;
 	float xblock, yblock;
 public:
 	rBlock(float xcoord, float ycoord) {
@@ -186,10 +187,11 @@ void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision c
 		topBallbound > bottomBlockbound &&
 		bottomBallbound < topBlockbound) {
 
+		block->blockhit();
+		ball.setyvelocityball(- 1 * ball.getyvelocityball());
 		ball.setxball(ball.getxvelocityball());
 		ball.setyball(ball.getyvelocityball());
-		ball.setyvelocityball(-1 * ball.getyvelocityball());
-		block->blockhit();
+		
 	}
 }
 
@@ -197,7 +199,7 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 
 	for (int i = 0; i < grid.size(); i++) {
 		if (grid[i]->getlive()) {
-			if (grid[i]->gethealth() > 6) {
+			if (grid[i]->gethealth() > 2 * basehealth) {
 				// set the rectangle to the color red 
 				glColor3f(1.0f, 0.0f, 0.0f);
 				// Drawing process   
@@ -213,7 +215,7 @@ void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
 				glEnd();
 				collisioncheck(grid[i], ball);
 			}
-			else if (grid[i]->gethealth() > 3) {
+			else if (grid[i]->gethealth() > basehealth) {
 				// set the rectangle to the color orrange 
 				glColor3f(1.0f, 0.5f, 0.0f);
 				// Drawing process   
