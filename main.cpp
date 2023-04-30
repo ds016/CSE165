@@ -73,9 +73,6 @@ int main() {
 
         // create the player model in the window context
         player.createPaddle();
-        
-        // create the blocks
-        createBlocks(Grid);
 
         // create the ball model in the window context
         ball.createBall();
