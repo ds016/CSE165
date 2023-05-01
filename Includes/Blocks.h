@@ -10,6 +10,7 @@ const int basehealth = 1;
 const float height = 0.01f;
 const float width = 0.055f;
 const float gap = 0.07f;
+extern int gamehealth;
 
 class genBlock {	//generic block object to be inherited by the different versions
 private:
@@ -28,18 +29,19 @@ public:
 	float getheight() { return height; }
 
 	virtual void blockhit() = 0;	//pure virtual function to make this abstract, 
-									//the point of it is to deal with modifying block data once hit
+	//the point of it is to deal with modifying block data once hit
 };
 
-class yBlock:public genBlock{
+class yBlock :public genBlock {
 private:
 	bool alive;
-	int health = basehealth;
+	int health;
 	float xblock, yblock;
 public:
 	yBlock(float xcoord, float ycoord) {
 		setxblock(xcoord);
 		setyblock(ycoord);
+		health = basehealth;
 		alive = true;
 	}
 	bool getlive() { return alive; };
@@ -53,22 +55,28 @@ public:
 		if (alive == true) {
 			if (health > 1) {
 				health--;
+				
 			}
-			else alive = false;
+			else {
+				alive = false;
+				gamehealth--;
+			}
+				
 		}
-		std::cout << "yellow hit" << std::endl;
+		std::cout << "yellow hit " << std::endl;
 	}
 };
 
-class oBlock:public genBlock{
+class oBlock :public genBlock {
 private:
 	bool alive;
-	int health = 2 * basehealth;
+	int health;
 	float xblock, yblock;
 public:
 	oBlock(float xcoord, float ycoord) {
-		this->xblock=(xcoord);
-		this->yblock=(ycoord);
+		this->xblock = (xcoord);
+		this->yblock = (ycoord);
+		health = 2 * basehealth;
 		alive = true;
 	}
 	bool getlive() { return alive; };
@@ -88,21 +96,25 @@ public:
 			if (health > 1) {
 				health--;
 			}
-			else alive = false;
+			else {
+				alive = false;
+				gamehealth--;
+			}
 		}
 		std::cout << "orange hit" << std::endl;
 	}
 };
 
-class rBlock:public genBlock{
+class rBlock :public genBlock {
 private:
 	bool alive;
-	int health = 3 * basehealth;
+	int health;
 	float xblock, yblock;
 public:
 	rBlock(float xcoord, float ycoord) {
 		this->xblock = xcoord;
 		this->yblock = ycoord;
+		health = 3 * basehealth;
 		alive = true;
 	}
 	bool getlive() { return alive; };
@@ -124,7 +136,10 @@ public:
 			if (health > 1) {
 				health--;
 			}
-			else alive = false;
+			else {
+				alive = false;
+				gamehealth--;
+			}
 		}
 		std::cout << "red hit" << std::endl;
 	}
@@ -133,7 +148,7 @@ public:
 
 std::vector<genBlock*> generateBlocks() {
 	std::vector<genBlock*> grid;	//stored top->bottom, left->right
-	
+
 	for (int y = 0; y < 9; y++) {
 		for (int x = 0; x < 16; x++) {
 			if (y < 3) {
@@ -142,12 +157,11 @@ std::vector<genBlock*> generateBlocks() {
 			else if (3 <= y && y < 6) {
 				grid.push_back(new oBlock(-0.99 + width + (x * (width + gap)), 0.8 - height - (y * (height + gap))));
 			}
-			else{
+			else {
 				grid.push_back(new yBlock(-0.99 + width + (x * (width + gap)), 0.8 - height - (y * (height + gap))));
 			}
 		}
 	}
-
 	return grid;
 }
 
@@ -157,30 +171,10 @@ void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision c
 	float bottomBallbound = ball.getyball() - ball.getradiusball();;
 	float topBallbound = ball.getyball() + ball.getradiusball();;
 
-	float leftBlockbound = block->getxblock();
-	float rightBlockbound = block->getxblock() + width;
+	float leftBlockbound = block->getxblock() - gap;
+	float rightBlockbound = block->getxblock() + (width);
 	float bottomBlockbound = block->getyblock();
-	float topBlockbound = block->getyblock() + height;
-
-	/*
-	if ((ball.getxball() + ball.getradiusball() > block->getxblock() - width) &&
-		(ball.getxball() - ball.getradiusball() < block->getxblock() - width) &&
-		(ball.getyball() + ball.getradiusball() > block->getyblock() - width) &&
-		(ball.getyball() - ball.getradiusball() < block->getyblock() + width)) {
-
-		if ((ball.getxball() > block->getxblock() - width) &&
-			(ball.getxball() < block->getxblock() + width)) {
-
-			ball.setyvelocityball(-1 * ball.getyvelocityball());
-			block->blockhit();
-		}
-		else if ((ball.getyball() > block->getyblock() + height) &&
-			(ball.getyball() < block->getyblock() + height)) {
-
-			ball.setxvelocityball(-1 * ball.getxvelocityball());
-			block->blockhit();
-		}
-	}*/
+	float topBlockbound = block->getyblock() + (height);
 
 	if (leftBallbound < rightBlockbound &&
 		rightBallbound > leftBlockbound &&
@@ -188,15 +182,18 @@ void collisioncheck(genBlock* block, Ball& ball) {		//ball and block collision c
 		bottomBallbound < topBlockbound) {
 
 		block->blockhit();
-		ball.setyvelocityball(- 1 * ball.getyvelocityball());
-		ball.setxball(ball.getxvelocityball());
-		ball.setyball(ball.getyvelocityball());
-		
+		ball.setyvelocityball(-1 * ball.getyvelocityball());
+		if (ball.getxvelocityball() > 0)
+			ball.setxvelocityball((rand() % 5) * 0.0005f);
+		else ball.setxvelocityball(-1 * (rand() % 5 + 1) * 0.0005f);
+
+		ball.setxballforce(ball.getxvelocityball());
+		ball.setyballforce(ball.getyvelocityball());
+
 	}
 }
 
 void createBlocks(std::vector<genBlock*> grid, Ball& ball) {
-
 	for (int i = 0; i < grid.size(); i++) {
 		if (grid[i]->getlive()) {
 			if (grid[i]->gethealth() > 2 * basehealth) {

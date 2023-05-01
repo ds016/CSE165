@@ -24,8 +24,10 @@ public:
     float getradiusball() { return radiusball; }
     float getxball() { return xball; }
     float getyball() { return yball; }
-    void setxball(float extra) { xball += extra; }
-    void setyball(float extra) { yball += extra; }
+    void setxball(float extra) { xball = extra; }
+    void setyball(float extra) { yball = extra; }
+    void setxballforce(float extra) { xball += extra; }
+    void setyballforce(float extra) { yball += extra; }
     float getxvelocityball() { return xvelocityball; }
     float getyvelocityball() { return yvelocityball; }
     void setxvelocityball(float newv) { xvelocityball = newv; std::cout << "x: " << newv << std::endl; }
@@ -65,7 +67,6 @@ public:
         float topy = 1.0;
         float boty = -1.0;
 
-
         // updating the ball's position with velocity values, AKA "shifting the position by velocity values
         xball += xvelocityball;
         yball += yvelocityball;
@@ -84,9 +85,14 @@ public:
 
         // need to return game over if this is going to be the end (FINISH THIS LATER)
         if (yball < boty) {
-            yvelocityball = -1 * (yvelocityball);
+            this->xball = 0.00f;
+            this->yball = -0.5f;
+            int np = rand() % 2;
+            if (np == 0)
+                xvelocityball = -1 * (rand() % 10 * 0.001f);
+            else
+                xvelocityball = (rand() % 10 * 0.001f);
         }
-
 
         // --> check if yball is less than / equal to top of paddle (height)
         // --> check if xball is within bounds of widthpaddle (width)
@@ -97,8 +103,22 @@ public:
             && xball + radiusball > player.getxpaddle() - player.getwidthpaddle()
             && xball - radiusball < player.getxpaddle() + player.getwidthpaddle()) {
             // yball = ypaddle + heightpaddle / 2 + radiusball;
-            yvelocityball = -1 * yvelocityball;
+            yvelocityball *= -1;
+            float s = ((player.getxpaddle() + player.getwidthpaddle()) - xball);
+            if (s > player.getwidthpaddle() && xvelocityball < 0)
+                xvelocityball *= 1 + (0.001 * (100 * s-player.getwidthpaddle()));
+            else if ((s > player.getwidthpaddle() && xvelocityball > 0))
+                xvelocityball *= -1 - (0.001 * (100 * s - player.getwidthpaddle()));
+            else if ((s < player.getwidthpaddle() && xvelocityball < 0))
+                xvelocityball *= -1 - (0.001 * (100 * s - player.getwidthpaddle()));
+            else
+                xvelocityball *= 1 + (0.001 * (100 * s - player.getwidthpaddle()));
+            //std::cout << xvelocityball << std::endl;
+
         }
+
+        
+
     }
 
 };

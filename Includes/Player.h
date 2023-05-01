@@ -59,11 +59,11 @@ public:
         // ********** IMPORTANT, WHEN CREATING SHAPES, MUST DRAW CCW, BOT-LEFT -> BOT-RIGHT -> TOP-RIGHT -> TOP-LEFT; **************
 
         // Example code to create a red paddle in the middle of the window screen 
-        glVertex2f(xpaddle - widthpaddle, ypaddle);      // Bottom Left vertice
-        glVertex2f(xpaddle + widthpaddle, ypaddle);      // Bottom Right vertice 
+        glVertex2f(xpaddle - (widthpaddle), ypaddle);      // Bottom Left vertice
+        glVertex2f(xpaddle + (widthpaddle), ypaddle);      // Bottom Right vertice 
 
-        glVertex2f(xpaddle + widthpaddle, ypaddle + heightpaddle);   // Top Right Vertice
-        glVertex2f(xpaddle - widthpaddle, ypaddle + heightpaddle);   // Top Left Vertice
+        glVertex2f(xpaddle + (widthpaddle), ypaddle + heightpaddle);   // Top Right Vertice
+        glVertex2f(xpaddle - (widthpaddle), ypaddle + heightpaddle);   // Top Left Vertice
 
         // End drawing operation
         glEnd();
