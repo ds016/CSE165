@@ -12,6 +12,7 @@ using namespace std;
 // game window dimension and class declaration
 int widthwindow = 720;
 int heightwindow = 720;
+int gamehealth = 0;
 Player player;
 Ball ball;
 std::vector<genBlock*> Grid = generateBlocks();
@@ -40,9 +41,6 @@ void mousefunc(GLFWwindow* window, double xcord, double ycord)
 
 }
 
-
-
-
 int main() {
     // create the window instance here
     GLFWwindow* window;
@@ -69,6 +67,18 @@ int main() {
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
+        if (gamehealth == 0) {
+            Grid.clear();
+            Grid = generateBlocks();
+            ball.setxball(0.00f);
+            ball.setyball(-0.5f);
+            int np = rand() % 2;
+            if (np == 0)
+                ball.setxvelocityball(- 1 * (rand() % 10 * 0.001f));
+            else
+                ball.setxvelocityball((rand() % 10 * 0.001f));
+            gamehealth = 144;
+        }
 
 
         // clear the screen before drawing
@@ -84,13 +94,14 @@ int main() {
         ball.ballmovement(player);
 
         // Spawn the blocks
-        createBlocks(Grid,ball);
+        createBlocks(Grid, ball);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
+
 
     }
 
